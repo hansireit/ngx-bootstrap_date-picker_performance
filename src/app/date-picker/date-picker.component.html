@@ -1,0 +1,25 @@
+<div
+  [tooltip]="
+    'Hello dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd'
+  "
+  [delay]="500"
+  class="big-wrapper"
+  (click)="bigClicked()"
+>
+  <div>
+    <input
+      #datepickerInput
+      (keydown)="onKeydown($event)"
+      class="picker"
+      type="text"
+      maxlength="10"
+      bsDatepicker
+      [triggers]="'focus'"
+      [bsConfig]="bsConfig"
+      [placeholder]="'dfdfsdf'"
+      [readonly]="false"
+      [bsValue]="value"
+      (bsValueChange)="onDateChange($event)"
+    />
+  </div>
+</div>

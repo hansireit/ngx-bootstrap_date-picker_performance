@@ -1,4 +1,4 @@
-<hello name="{{ name }}"></hello>
-<p>
-  Start editing to see some magic happen :)
-</p>
+<div class="date-pickers">
+  <app-date-picker *ngFor="let input of inputs" [title]="input">
+  </app-date-picker>
+</div>

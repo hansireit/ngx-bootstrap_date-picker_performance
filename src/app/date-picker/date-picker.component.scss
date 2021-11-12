@@ -1,0 +1,16 @@
+.big-wrapper {
+  width: 50px;
+  height: 80px;
+  box-sizing: border-box;
+  padding: 2rem;
+  background-color: gray;
+}
+
+div {
+    display: flex;
+}
+
+input {
+  height: 30px;
+  width: 50px;
+}

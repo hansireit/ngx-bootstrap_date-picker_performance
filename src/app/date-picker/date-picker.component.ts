@@ -3,25 +3,23 @@ import {
   Component,
   ElementRef,
   EventEmitter,
-  HostListener,
   Input,
-  OnChanges,
-  OnDestroy,
   OnInit,
   Output,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import { isDateValid } from 'ngx-bootstrap/chronos';
-import { BsDatepickerConfig, BsDatepickerDirective, BsLocaleService } from 'ngx-bootstrap/datepicker';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import {
+  BsDatepickerConfig,
+  BsDatepickerDirective,
+} from 'ngx-bootstrap/datepicker';
 
 @Component({
   selector: 'app-date-picker',
   templateUrl: './date-picker.component.html',
-  styleUrls: ['./date-picker.component.scss']
+  styleUrls: ['./date-picker.component.scss'],
 })
-export class DatePickerComponent implements OnInit, OnDestroy, OnChanges {
+export class DatePickerComponent implements OnInit {
   @Input() title = '';
   @Input() required = false;
   @Input() dark = false;
@@ -92,51 +90,17 @@ export class DatePickerComponent implements OnInit, OnDestroy, OnChanges {
   private _value!: Date;
   private _valueRange!: Date[];
   private initialValue!: Date;
-  private initialRangeValue!: Date[];
-  private destroy$ = new Subject<boolean>();
 
-  constructor(
-    private localeService: BsLocaleService,
-    private changeDetection: ChangeDetectorRef
-  ) {
+  constructor(private changeDetection: ChangeDetectorRef) {
     this.loadDialogConfig();
-  }
-
-  /**
-   *
-   * @param event the window resize event
-   */
-  @HostListener('window:resize', ['$event'])
-  onResize() {
-    this.checkForTruncation();
   }
 
   /**
    * Initialize component
    */
   ngOnInit(): void {
-    this.initialRangeValue = this._valueRange;
     this.initialValue = this._value;
     this.loadDialogConfig();
-  }
-
-  /**
-   *
-   */
-  ngOnChanges(): void {
-    this.checkForTruncation();
-  }
-
-  /**
-   * End subscriptions on destroy
-   */
-  ngOnDestroy(): void {
-    this.destroy$.next(true);
-    this.destroy$.complete();
-  }
-
-  bigClicked(): void {
-    this.datePickerInput.nativeElement.focus();
   }
 
   /**
@@ -144,21 +108,7 @@ export class DatePickerComponent implements OnInit, OnDestroy, OnChanges {
    * @returns { string } Date-Format
    */
   getDateFormat(): string {
-    return "dd.MM.yyyy"
-  }
-
-  /**
-   * If the user enters the component with the mouse, activate hover styling
-   */
-  onMouseEnter() {
-    this.isHovering = true;
-  }
-
-  /**
-   * If the user leaves the component with the mouse, deactivate hover styling
-   */
-  onMouseLeave() {
-    this.isHovering = false;
+    return 'dd.MM.yyyy';
   }
 
   /**
@@ -166,35 +116,6 @@ export class DatePickerComponent implements OnInit, OnDestroy, OnChanges {
    */
   triggerInputFocus(): void {
     this.datePickerInput.nativeElement.focus();
-  }
-  /**
-   * Sets picker state to false
-   */
-  pickerHidden() {
-    this.checkForTruncation();
-    this.focusLost.emit(this.value);
-  }
-
-  /**
-   * Sets picker state to true
-   */
-  pickerShown() {
-  }
-
-  /**
-   * Reset Value to initial value
-   */
-  resetValue(): void {
-    this._value = this.initialValue;
-    this.valueChange.emit(this._value.toISOString());
-  }
-
-  /**
-   * Reset Range Value to initial value
-   */
-  resetRangeValue(): void {
-    this._valueRange = this.initialRangeValue;
-    this.valueRangeChange.emit(this._valueRange);
   }
 
   /**
@@ -209,14 +130,6 @@ export class DatePickerComponent implements OnInit, OnDestroy, OnChanges {
       { dateInputFormat: this.getDateFormat() },
       { adaptivePosition: false }
     );
-  }
-
-  /**
-   * Shows clear-Icon when input is not empty and picker is searchbox
-   * @returns {boolean} is empty
-   */
-  isEmpty(): boolean {
-    return this.rangePicker ? !this.valueRange : !this.value;
   }
 
   /**
@@ -244,7 +157,9 @@ export class DatePickerComponent implements OnInit, OnDestroy, OnChanges {
    * @returns { boolean } if dataA quals dateB by Date only
    */
   compareDateWithoutTime(dateA: Date, dateB: Date): boolean {
-    return dateA && dateB ? dateA.toDateString() === dateB.toDateString() : false;
+    return dateA && dateB
+      ? dateA.toDateString() === dateB.toDateString()
+      : false;
   }
 
   /**
@@ -267,62 +182,5 @@ export class DatePickerComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     this.value = date;
-  }
-
-  /**
-   * Checks whether to show a tooltip or not, based on if the placeholder/title overflows the input
-   */
-  checkForTruncation(): void {
-    // const timeoutTimeForTooltips = 50;
-    // setTimeout(() => {
-    //   if (this.appearance === TextInputAppearance.PLACEHOLDER) {
-    //     this.placeholderTruncated = this.truncatedTooltipPlaceholderService.isPlaceholderTruncated(
-    //       this.datePickerInput,
-    //       this.title
-    //     );
-    //   } else if (this.appearance === TextInputAppearance.TITLE) {
-    //     this.placeholderTruncated = this.truncatedTooltipPlaceholderService.isPlaceholderTruncated(
-    //       this.titleInput,
-    //       this.title
-    //     );
-    //   }
-    // }, timeoutTimeForTooltips);
-  }
-
-  /**
-   * Handle value change on bootstrap datepicker
-   * @param dates new selected date
-   */
-  onDateRangeChange(dates: Date[]): void {
-    if (this._valueRange !== dates) {
-      this._valueRange = dates;
-      this.valueRangeChange.emit(dates);
-      this.changedValue.emit(true);
-    }
-  }
-
-  /**
-   * Clears Input
-   */
-  onClearButtonClicked(): void {
-    this.rangePicker ? this.resetRangeValue() : this.resetValue();
-    this.pickerHidden();
-  }
-
-  /**
-   * triggered when the field lost the focus.
-   */
-  onFocus() {
-    this.datePicker.show();
-  }
-
-  /**
-   * Triggered when a key is pressed in the input
-   * @param event the event
-   */
-  onKeydown(event: KeyboardEvent) {
-    if (event.key === 'Tab') {
-      this.datePicker.hide();
-    }
   }
 }

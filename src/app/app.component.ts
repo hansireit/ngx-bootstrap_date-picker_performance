@@ -3,14 +3,13 @@ import {
   Component,
   QueryList,
   ViewChildren,
-} from "@angular/core";
-import { Subscription } from "rxjs";
-import { DatePickerComponent } from "./date-picker/date-picker.component";
+} from '@angular/core';
+import { DatePickerComponent } from './date-picker/date-picker.component';
 
 @Component({
-  selector: "my-app",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.scss"],
+  selector: 'my-app',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements AfterViewInit {
   readonly numberOfInputs = 10;
@@ -28,7 +27,6 @@ export class AppComponent implements AfterViewInit {
     }
   }
   ngAfterViewInit(): void {
-    console.log(this.datePicker);
     this.startClicking();
   }
 
@@ -45,6 +43,6 @@ export class AppComponent implements AfterViewInit {
   getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+    return Math.floor(Math.random() * (max - min + 1) + min);
   }
 }

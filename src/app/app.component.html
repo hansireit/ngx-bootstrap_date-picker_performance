@@ -1,6 +1,13 @@
-<div class="date-pickers">
-  <app-date-picker *ngFor="let input of inputs" [title]="input">
-  </app-date-picker>
+<div class="wrapper">
+  <div class="date-pickers">
+    <app-date-picker *ngFor="let input of inputs" [title]="input">
+    </app-date-picker>
+  </div>
+  <div class="text">
+    <p>
+      Click on the input fields, while the automated clicker is running. After
+      some time this tab will start freezing
+    </p>
+    <p>Automated clicker clicked {{ clickCount }} times</p>
+  </div>
 </div>
-
-{{ clickCount }}
